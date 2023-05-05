@@ -19,14 +19,6 @@ export default async function Home() {
             className="flex flex-col items-center justify-center p-4 bg-gray-100 rounded-md"
             key={product.id}
           >
-            {/* {product.imageUrl && (
-              <Image
-                src={product.imageUrl}
-                alt={product.name}
-                width={200}
-                height={200}
-              />
-            )} */}
             <h2 className="text-xl font-bold">{product.name}</h2>
             <p className="text-gray-500">{product.description}</p>
             <p className="text-gray-500">{product.price}</p>
