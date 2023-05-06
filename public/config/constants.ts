@@ -4,3 +4,7 @@ export const HTTP_STATUS_CODES = {
   METHOD_NOT_ALLOWED: 405,
   NOT_FOUND: 404,
 };
+
+//Endpoints
+export const PRODUCTS_ENDPOINT: string =
+  process.env.NEXT_PUBLIC_PRODUCTS_ENDPOINT || "";
