@@ -9,8 +9,9 @@ import {
 } from "@mantine/core";
 import { useServerInsertedHTML } from "next/navigation";
 import { useHotkeys, useLocalStorage } from "@mantine/hooks";
-import lightTheme from "./themes/lightTheme";
-import darkTheme from "./themes/darkTheme";
+import lightTheme from "../themes/lightTheme";
+import darkTheme from "../themes/darkTheme";
+import SupabaseProvider from "./supabase-provider";
 export default function RootStyleRegistry({
   children,
 }: {
@@ -40,15 +41,17 @@ export default function RootStyleRegistry({
   ));
 
   return (
-    <CacheProvider value={cache}>
-      <MantineProvider
-        withGlobalStyles
-        withNormalizeCSS
-        theme={theme}
-        key={theme.colorScheme}
-      >
-        <AppShell>{children}</AppShell>
-      </MantineProvider>
-    </CacheProvider>
+    <SupabaseProvider>
+      <CacheProvider value={cache}>
+        <MantineProvider
+          withGlobalStyles
+          withNormalizeCSS
+          theme={theme}
+          key={theme.colorScheme}
+        >
+          <AppShell>{children}</AppShell>
+        </MantineProvider>
+      </CacheProvider>
+    </SupabaseProvider>
   );
 }
