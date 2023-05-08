@@ -3,7 +3,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { createBrowserSupabaseClient } from "@supabase/auth-helpers-nextjs";
 import { useRouter } from "next/navigation";
-
 import type { SupabaseClient } from "@supabase/auth-helpers-nextjs";
 import type { Database } from "../types/supabase";
 

@@ -30,6 +30,7 @@
     "autoprefixer": "10.4.14",
     "dayjs": "^1.11.7",
     "embla-carousel-react": "^7.1.0",
+    "encoding": "^0.1.13",
     "eslint": "8.40.0",
     "eslint-config-next": "13.4.1",
     "framer-motion": "^10.12.8",

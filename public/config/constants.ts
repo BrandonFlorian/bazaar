@@ -5,6 +5,19 @@ export const HTTP_STATUS_CODES = {
   NOT_FOUND: 404,
 };
 
+export const HEADER_HEIGHT: number = 60;
+
 //Endpoints
 export const PRODUCTS_ENDPOINT: string =
   process.env.NEXT_PUBLIC_PRODUCTS_ENDPOINT || "";
+
+export const appPaths = {
+  home: "/",
+  products: "/products",
+  product: "/product",
+  cart: "/cart",
+  checkout: "/checkout",
+  signIn: "/sign-in",
+  order: "/order",
+  faq: "/faq",
+};

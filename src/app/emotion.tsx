@@ -12,6 +12,8 @@ import { useHotkeys, useLocalStorage } from "@mantine/hooks";
 import lightTheme from "../themes/lightTheme";
 import darkTheme from "../themes/darkTheme";
 import SupabaseProvider from "./supabase-provider";
+import Navbar from "@/components/Navbar";
+import { appPaths } from "../../public/config/constants";
 export default function RootStyleRegistry({
   children,
 }: {
@@ -40,6 +42,25 @@ export default function RootStyleRegistry({
     />
   ));
 
+  const mockLinks = [
+    {
+      link: appPaths.home,
+      label: "Home",
+    },
+    {
+      link: appPaths.products,
+      label: "Products",
+    },
+    {
+      link: appPaths.faq,
+      label: "FAQ",
+    },
+    {
+      link: appPaths.signIn,
+      label: "Sign In",
+    },
+  ];
+
   return (
     <SupabaseProvider>
       <CacheProvider value={cache}>
@@ -49,7 +70,7 @@ export default function RootStyleRegistry({
           theme={theme}
           key={theme.colorScheme}
         >
-          <AppShell>{children}</AppShell>
+          <AppShell header={<Navbar links={mockLinks} />}>{children}</AppShell>
         </MantineProvider>
       </CacheProvider>
     </SupabaseProvider>

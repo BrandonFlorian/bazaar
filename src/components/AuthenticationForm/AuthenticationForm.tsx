@@ -36,12 +36,11 @@ import {
   Container,
 } from "@mantine/core";
 
-import { type FC, FormEvent, useState } from "react";
+import { type FC, FormEvent } from "react";
 import { FormValues } from "./AuthenticationForm.types";
 import useAuthenticationForm from "./useAuthenticationForm";
 import SignInForm from "../SignInForm/SignInForm";
 import SignUpForm from "../SignUpForm/SignUpForm";
-import ConfirmationForm from "../ConfirmationForm/ConfirmationForm";
 
 export const AuthenticationForm: FC = (props: PaperProps) => {
   const { handleSubmit, loading, type, setType } = useAuthenticationForm();
@@ -87,16 +86,11 @@ export const AuthenticationForm: FC = (props: PaperProps) => {
             form.onSubmit(async () => {
               await handleSubmit(form.values, type);
             })();
-
-            if (type === "register") {
-              setType("confirm");
-            }
           }}
         >
           <Stack>
             {type === "login" && <SignInForm form={form} />}
             {type === "register" && <SignUpForm form={form} />}
-            {type === "confirm" && <ConfirmationForm form={form} />}
           </Stack>
 
           <Group position="apart" mt="xl">
@@ -118,7 +112,7 @@ export const AuthenticationForm: FC = (props: PaperProps) => {
                 : "Don't have an account? Register"}
             </Anchor>
             <Button type="submit" radius="xl" loading={loading}>
-              {type === "confirm" ? "Confirm" : upperFirst(type)}
+              {upperFirst(type)}
             </Button>
           </Group>
         </form>
