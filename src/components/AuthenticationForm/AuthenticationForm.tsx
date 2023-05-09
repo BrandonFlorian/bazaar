@@ -1,6 +1,6 @@
 /**
   @file AuthenticationForm React Component
-  This component is responsible for rendering the authentication form for Clancyworld.
+  This component is responsible for rendering the authentication form for Open-Market.
   It allows users to log in, register, and confirm their registration using email or
   third-party services like Google and Twitter.
   @component

@@ -38,7 +38,7 @@ export const SignUpForm: FC<FormProps> = (props: FormProps) => {
       <TextInput
         required
         label="Email"
-        placeholder="email@clancyworld.com"
+        placeholder="email@example.com"
         value={form.values.email}
         onChange={(event) =>
           form.setFieldValue("email", event.currentTarget.value)
