@@ -14,6 +14,7 @@ import darkTheme from "../themes/darkTheme";
 import SupabaseProvider from "./supabase-provider";
 import Navbar from "@/components/Navbar";
 import { appPaths } from "../../public/config/constants";
+import { IconHome, IconBuildingStore, IconHelp } from "@tabler/icons-react";
 export default function RootStyleRegistry({
   children,
 }: {
@@ -42,22 +43,21 @@ export default function RootStyleRegistry({
     />
   ));
 
-  const mockLinks = [
+  const links = [
     {
       link: appPaths.home,
       label: "Home",
+      icon: <IconHome />,
     },
     {
       link: appPaths.products,
       label: "Products",
+      icon: <IconBuildingStore />,
     },
     {
       link: appPaths.faq,
-      label: "FAQ",
-    },
-    {
-      link: appPaths.signIn,
-      label: "Sign In",
+      label: "Support",
+      icon: <IconHelp />,
     },
   ];
 
@@ -70,7 +70,7 @@ export default function RootStyleRegistry({
           theme={theme}
           key={theme.colorScheme}
         >
-          <AppShell header={<Navbar links={mockLinks} />}>{children}</AppShell>
+          <AppShell header={<Navbar links={links} />}>{children}</AppShell>
         </MantineProvider>
       </CacheProvider>
     </SupabaseProvider>

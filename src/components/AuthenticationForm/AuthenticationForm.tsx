@@ -41,6 +41,7 @@ import { FormValues } from "./AuthenticationForm.types";
 import useAuthenticationForm from "./useAuthenticationForm";
 import SignInForm from "../SignInForm/SignInForm";
 import SignUpForm from "../SignUpForm/SignUpForm";
+import ConfirmationForm from "../ConfirmationForm/ConfirmationForm";
 
 export const AuthenticationForm: FC = (props: PaperProps) => {
   const { handleSubmit, loading, type, setType } = useAuthenticationForm();
@@ -91,6 +92,7 @@ export const AuthenticationForm: FC = (props: PaperProps) => {
           <Stack>
             {type === "login" && <SignInForm form={form} />}
             {type === "register" && <SignUpForm form={form} />}
+            {type === "confirm" && <ConfirmationForm form={form} />}
           </Stack>
 
           <Group position="apart" mt="xl">

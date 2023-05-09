@@ -2,13 +2,15 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { FormValues } from "./AuthenticationForm.types";
-import { supabase } from "@/utils/supabaseClient";
+import { appPaths } from "../../../public/config/constants";
+import { useSupabase } from "@/app/supabase-provider";
 
 export const useAuthenticationForm = () => {
   const router = useRouter();
-  const [type, setType] = useState<"login" | "register">("login");
+  const [type, setType] = useState<"login" | "register" | "confirm">("login");
   const [errorMessage, setErrorMessage] = useState<string | undefined>("");
   const [loading, setLoading] = useState<boolean>(false);
+  const { supabase } = useSupabase();
 
   const handleSubmit = async (values: FormValues, type: string) => {
     if (type === "login") {
@@ -29,6 +31,7 @@ export const useAuthenticationForm = () => {
       if (error) setErrorMessage(error.message);
       else {
         setLoading(false);
+        setType("confirm");
       }
     } catch (error: any) {
       setLoading(false);
@@ -47,7 +50,7 @@ export const useAuthenticationForm = () => {
       if (error) setErrorMessage(error.message);
       else {
         setLoading(false);
-        return router.push("/");
+        return router.push(appPaths.home);
       }
     } catch (error: any) {
       setLoading(false);
