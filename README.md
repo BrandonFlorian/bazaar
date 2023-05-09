@@ -1,5 +1,7 @@
 # Bazaar
 
+Please note that this is currently a work in progress and is not production ready!
+
 Welcome to Bazaar, a modern e-commerce application built with Next.js, Supabase, Prisma, and Mantine.
 
 This project showcases a fast and responsive e-commerce platform, leveraging the latest technologies and best practices for web development.
