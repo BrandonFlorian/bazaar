@@ -18,7 +18,7 @@ export const lightTheme: MantineThemeOverride = {
     "-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji",
   fontFamilyMonospace:
     "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace",
-  primaryColor: "pink",
+  primaryColor: "blue",
   respectReducedMotion: true,
   cursorType: "default",
   defaultGradient: {

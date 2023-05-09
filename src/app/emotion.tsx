@@ -9,8 +9,12 @@ import {
 } from "@mantine/core";
 import { useServerInsertedHTML } from "next/navigation";
 import { useHotkeys, useLocalStorage } from "@mantine/hooks";
-import lightTheme from "./themes/lightTheme";
-import darkTheme from "./themes/darkTheme";
+import lightTheme from "../themes/lightTheme";
+import darkTheme from "../themes/darkTheme";
+import SupabaseProvider from "./supabase-provider";
+import Navbar from "@/components/Navbar";
+import { appPaths } from "../../public/config/constants";
+import { IconHome, IconBuildingStore, IconHelp } from "@tabler/icons-react";
 export default function RootStyleRegistry({
   children,
 }: {
@@ -39,16 +43,36 @@ export default function RootStyleRegistry({
     />
   ));
 
+  const links = [
+    {
+      link: appPaths.home,
+      label: "Home",
+      icon: <IconHome />,
+    },
+    {
+      link: appPaths.products,
+      label: "Products",
+      icon: <IconBuildingStore />,
+    },
+    {
+      link: appPaths.faq,
+      label: "Support",
+      icon: <IconHelp />,
+    },
+  ];
+
   return (
-    <CacheProvider value={cache}>
-      <MantineProvider
-        withGlobalStyles
-        withNormalizeCSS
-        theme={theme}
-        key={theme.colorScheme}
-      >
-        <AppShell>{children}</AppShell>
-      </MantineProvider>
-    </CacheProvider>
+    <SupabaseProvider>
+      <CacheProvider value={cache}>
+        <MantineProvider
+          withGlobalStyles
+          withNormalizeCSS
+          theme={theme}
+          key={theme.colorScheme}
+        >
+          <AppShell header={<Navbar links={links} />}>{children}</AppShell>
+        </MantineProvider>
+      </CacheProvider>
+    </SupabaseProvider>
   );
 }
