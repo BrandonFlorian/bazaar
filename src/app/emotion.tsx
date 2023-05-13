@@ -15,10 +15,14 @@ import SupabaseProvider from "./supabase-provider";
 import Navbar from "@/components/Navbar";
 import { appPaths } from "../../public/config/constants";
 import { IconHome, IconBuildingStore, IconHelp } from "@tabler/icons-react";
+import { Notifications } from "@mantine/notifications";
+import { type Session } from "@supabase/auth-helpers-nextjs";
 export default function RootStyleRegistry({
   children,
+  session,
 }: {
   children: React.ReactNode;
+  session: Session | null | undefined;
 }) {
   const cache = useEmotionCache();
   cache.compat = true;
@@ -70,7 +74,8 @@ export default function RootStyleRegistry({
           theme={theme}
           key={theme.colorScheme}
         >
-          <AppShell header={<Navbar links={links} />}>{children}</AppShell>
+          <Notifications />
+          <AppShell header={<Navbar session={session} />}>{children}</AppShell>
         </MantineProvider>
       </CacheProvider>
     </SupabaseProvider>

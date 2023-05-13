@@ -1,13 +1,11 @@
-import { type UseFormReturnType } from "@mantine/form";
-
 export type FormValues = {
   email: string;
-  name: string;
+  username: string;
   password: string;
-  confirmationCode: string;
   terms: boolean;
 };
 
 export type FormProps = {
-  form: UseFormReturnType<FormValues, (values: FormValues) => FormValues>;
+  type: string;
+  setType: (type: "login" | "register" | "confirm") => void;
 };
