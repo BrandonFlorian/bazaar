@@ -21,6 +21,8 @@
     "@mantine/next": "^6.0.10",
     "@mantine/notifications": "^6.0.10",
     "@prisma/client": "^4.13.0",
+    "@supabase/auth-helpers-nextjs": "^0.6.1",
+    "@supabase/supabase-js": "^2.21.0",
     "@tabler/icons-react": "^2.17.0",
     "@types/node": "20.1.0",
     "@types/react": "18.2.5",
@@ -28,6 +30,7 @@
     "autoprefixer": "10.4.14",
     "dayjs": "^1.11.7",
     "embla-carousel-react": "^7.1.0",
+    "encoding": "^0.1.13",
     "eslint": "8.40.0",
     "eslint-config-next": "13.4.1",
     "framer-motion": "^10.12.8",
@@ -39,6 +42,8 @@
     "typescript": "5.0.4"
   },
   "devDependencies": {
-    "prisma": "^4.13.0"
+    "cross-env": "^7.0.3",
+    "prisma": "^4.13.0",
+    "supabase": "^1.55.1"
   }
 }

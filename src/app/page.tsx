@@ -1,20 +1,9 @@
-import { Product } from "@prisma/client";
-import ProductGallery from "@/components/ProductGallery/ProductGallery";
-import { PRODUCTS_ENDPOINT } from "../../public/config/constants";
+import Home from "@/components/Home";
 
-const getProducts = async (): Promise<Product[]> => {
-  const res = await fetch(PRODUCTS_ENDPOINT);
-  const data: Product[] = await res.json();
-
-  return data;
-};
-
-export default async function Home() {
-  const products: Product[] = await getProducts();
-
+export default async function HomePage() {
   return (
     <div>
-      <ProductGallery products={products} />
+      <Home />
     </div>
   );
 }
