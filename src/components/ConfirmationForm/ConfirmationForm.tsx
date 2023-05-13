@@ -17,17 +17,19 @@
   <ConfirmationForm form={form} />
 */
 "use client";
-import { TextInput, Text } from "@mantine/core";
+import { Text } from "@mantine/core";
 import React, { type FC } from "react";
 import { FormProps } from "./ConfirmationForm.types";
 
 export const ConfirmationForm: FC<FormProps> = (props: FormProps) => {
-  const { form } = props;
+  const { email } = props;
   return (
     <React.Fragment>
+      <Text size="lg" weight={500} align="center">
+        Confirm your email
+      </Text>
       <Text>
-        Please check your email for a confirmation link! We sent one to{" "}
-        {form.values.email}
+        Please check your email for a confirmation link! We sent one to {email}
       </Text>
     </React.Fragment>
   );

@@ -10,29 +10,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
-model User {
-  id              String    @id @default(uuid())
-  firstName       String    @map("first_name")
-  lastName        String    @map("last_name")
-  email           String    @unique
-  username        String    @unique
-  phoneNumber     String?   @map("phone_number") @unique
-  address         String?
-  city            String?
-  state           String?
-  country         String?
-  dateOfBirth     DateTime? @map("date_of_birth")
-  profileImageUrl String?   @map("profile_image_url")
-  bio             String?
-  role            String
-  accountStatus   String    @map("account_status")
-  createdAt       DateTime  @default(now())             @map("created_at")
-  updatedAt       DateTime  @default(now()) @updatedAt  @map("updated_at")
-  products        Product[]
-  @@map("users")
-}
-
 model Product {
   id              String    @id @default(uuid())
   name            String
@@ -47,6 +24,22 @@ model Product {
   status          String
   createdAt       DateTime  @default(now()) @map("created_at")
   updatedAt       DateTime  @default(now()) @updatedAt @map("updated_at")
-  seller          User      @relation(fields: [sellerId], references: [id])
+  seller          Profile   @relation(fields: [sellerId], references: [id])
   @@map("products")
+}
+
+model Profile {
+  id              String    @id @default(uuid())
+  firstName       String?   @map("first_name")
+  lastName        String?   @map("last_name")
+  email           String    @unique
+  username        String    @unique
+  phoneNumber     String?   @map("phone_number")
+  dateOfBirth     DateTime? @map("date_of_birth")
+  profileImageUrl String?   @map("profile_image_url")
+  bio             String?
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @default(now()) @updatedAt @map("updated_at")
+  products        Product[]
+  @@map("profile")
 }

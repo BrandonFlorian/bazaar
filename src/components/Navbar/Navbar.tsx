@@ -1,5 +1,5 @@
 "use client";
-import { FC, useEffect, useState } from "react";
+import { FC, useState } from "react";
 import {
   Header,
   Container,
@@ -12,56 +12,36 @@ import {
 import { useDisclosure } from "@mantine/hooks";
 import { useStyles } from "./Navbar.styles";
 import { HEADER_HEIGHT, appPaths } from "../../../public/config/constants";
-import { useSupabase } from "@/app/supabase-provider";
-import { IconLogin, IconLogout } from "@tabler/icons-react";
-import { useRouter } from "next/navigation";
-import { type User } from "@supabase/auth-helpers-nextjs";
+import { IconBuildingStore, IconHome, IconLogin } from "@tabler/icons-react";
+import { type Session } from "@supabase/auth-helpers-nextjs";
 import Link from "next/link";
+import NavbarProfileButton from "../NavbarProfileButton/NavbarProfileButton";
 
 interface NavbarProps {
-  links: { link: string; label: string; icon: JSX.Element }[];
+  session: Session | null | undefined;
 }
 
-export const Navbar: FC<NavbarProps> = ({ links }: NavbarProps) => {
+export const Navbar: FC<NavbarProps> = (props: NavbarProps) => {
+  const { session } = props;
+
+  const links = [
+    {
+      link: appPaths.home,
+      label: "Home",
+      icon: <IconHome />,
+    },
+    {
+      link: appPaths.products,
+      label: "Products",
+      icon: <IconBuildingStore />,
+    },
+  ];
   const [opened, { toggle, close }] = useDisclosure(false);
   const [active, setActive] = useState(links[0].link);
-  const [user, setUser] = useState<User | null>(null);
+
   const [loading, setLoading] = useState(true);
 
   const { classes, cx } = useStyles();
-
-  const { supabase } = useSupabase();
-
-  const router = useRouter();
-
-  useEffect(() => {
-    const setInitialUser = async () => {
-      const { data } = await supabase.auth.getSession();
-      if (data && data.session && data.session.user) {
-        setUser(data.session.user);
-      }
-      setLoading(false);
-    };
-
-    setInitialUser();
-  }, [supabase.auth]);
-
-  useEffect(() => {
-    const { data: authListener } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        if (event === "SIGNED_IN" && session && session.user) {
-          setUser(session.user);
-        } else if (event === "SIGNED_OUT") {
-          setUser(null);
-        }
-      }
-    );
-
-    // Clean up the listener when the component unmounts
-    return () => {
-      authListener.subscription.unsubscribe();
-    };
-  }, [supabase.auth]);
 
   const items = links.map((link) => (
     <Link
@@ -89,29 +69,8 @@ export const Navbar: FC<NavbarProps> = ({ links }: NavbarProps) => {
         <Group spacing={5} className={classes.links}>
           {items}
 
-          {!loading && user ? (
-            <Link
-              href="#"
-              className={cx(classes.link, {
-                [classes.linkActive]: active === "#",
-              })}
-              onClick={async () => {
-                setActive("#");
-                close();
-                const { error } = await supabase.auth.signOut();
-                if (error) {
-                  console.log(error);
-                } else {
-                  setActive(appPaths.home);
-                  router.push(appPaths.home);
-                }
-              }}
-            >
-              <Group spacing={5}>
-                <IconLogout />
-                SignOut
-              </Group>
-            </Link>
+          {session && session.user.role === "authenticated" ? (
+            <NavbarProfileButton session={session} />
           ) : (
             <Link
               href={appPaths.signIn}
