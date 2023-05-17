@@ -2,9 +2,8 @@ import type { UseFormReturnType } from "@mantine/form";
 
 export type FormValues = {
   email: string;
-  name: string;
+  username: string;
   password: string;
-  confirmationCode: string;
   terms: boolean;
 };
 

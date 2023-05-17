@@ -5,6 +5,8 @@ import { Product } from "@prisma/client";
 import { useStyles } from "./styles";
 import { formatPrice } from "@/utils/currencyUtils";
 import Image from "next/image";
+import { IMAGE_BUCKET, appPaths } from "../../../public/config/constants";
+import { useRouter } from "next/navigation";
 type Props = {
   product: Product;
 };
@@ -12,13 +14,14 @@ type Props = {
 export const ProductCard: FC<Props> = (props: Props) => {
   const { product } = props;
   const { classes } = useStyles();
+  const router = useRouter();
   return (
     <Card withBorder radius="md" className={classes.card}>
       <Card.Section className={classes.imageSection}>
         {product.imageUrl && (
           <Image
-            src={product.imageUrl}
-            alt="Tesla Model S"
+            src={`${IMAGE_BUCKET}/${product.imageUrl}`}
+            alt={product.imageUrl}
             width={150}
             height={150}
             className={classes.image}
@@ -45,7 +48,13 @@ export const ProductCard: FC<Props> = (props: Props) => {
         <Group spacing={30} className={classes.priceGroup}>
           <Text className={classes.price}>{formatPrice(product.price)}</Text>
 
-          <Button color="green" className={classes.button}>
+          <Button
+            variant="light"
+            className={classes.button}
+            onClick={() => {
+              router.push(`${appPaths.products}/${product.id}`);
+            }}
+          >
             Buy now
           </Button>
         </Group>
