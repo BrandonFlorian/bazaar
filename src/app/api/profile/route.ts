@@ -148,27 +148,6 @@ export async function PUT(request: NextRequest) {
   }
 }
 
-async function getUserById(request: NextRequest, id: string) {
-  try {
-    const user = await prisma.profile.findUnique({ where: { id } });
-
-    if (!user) {
-      return NextResponse.next({
-        status: HTTP_STATUS_CODES.NOT_FOUND,
-        headers: { "Content-Type": "application/json" },
-      });
-    }
-
-    return NextResponse.json(user, { status: HTTP_STATUS_CODES.OK });
-  } catch (error) {
-    console.error("Error fetching user:", error);
-    return NextResponse.next({
-      status: HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR,
-      headers: { "Content-Type": "application/json" },
-    });
-  }
-}
-
 async function getUserByUsername(username: string) {
   try {
     const user = await prisma.profile.findUnique({ where: { username } });

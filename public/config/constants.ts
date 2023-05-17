@@ -7,6 +7,8 @@ export const HTTP_STATUS_CODES = {
 };
 
 export const HEADER_HEIGHT: number = 60;
+export const SWR_RETRY_COUNT: number = 1;
+export const GALLERY_PAGE_SIZE: number = 12;
 
 //Endpoints
 export const PRODUCTS_ENDPOINT: string =
@@ -30,4 +32,78 @@ export const appPaths = {
   signIn: "/sign-in",
   order: "/order",
   faq: "/faq",
+  mint: "/mint",
 };
+
+export const FOOTER_LINKS = [
+  {
+    title: "About",
+    links: [
+      {
+        label: "Features",
+        link: "#",
+      },
+      {
+        label: "Pricing",
+        link: "#",
+      },
+      {
+        label: "Support",
+        link: "#",
+      },
+      {
+        label: "Forums",
+        link: "#",
+      },
+    ],
+  },
+  {
+    title: "Second Column",
+    links: [
+      {
+        label: "Project 1",
+        link: "#",
+      },
+      {
+        label: "Project 2",
+        link: "#",
+      },
+      {
+        label: "Project 3",
+        link: "#",
+      },
+      {
+        label: "Upcoming",
+        link: "#",
+      },
+    ],
+  },
+  {
+    title: "Community",
+    links: [
+      {
+        label: "Join Discord",
+        link: "#",
+      },
+      {
+        label: "Follow on Twitter",
+        link: "#",
+      },
+      {
+        label: "Email newsletter",
+        link: "#",
+      },
+      {
+        label: "GitHub discussions",
+        link: "#",
+      },
+    ],
+  },
+];
+
+export const FILTER_TERMS = [
+  { value: "low", label: "Price Low to High" },
+  { value: "high", label: "Price High to Low" },
+  { value: "new", label: "Newest" },
+  { value: "old", label: "Oldest" },
+];
