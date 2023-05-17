@@ -1,12 +1,12 @@
-import { createServerComponentSupabaseClient } from "@supabase/auth-helpers-nextjs";
-import RootStyleRegistry from "./emotion";
-import { cookies, headers } from "next/headers";
+import RootStyleRegistry from "./providers";
+
 export const metadata = {
   title: "Elysian Emporium",
   description:
     "A mystical marketplace where exotic treasures, enchanted artifacts, and magical wares from realms beyond converge, catering to heroes and adventurers seeking the extraordinary",
 };
-
+import { createServerComponentSupabaseClient } from "@supabase/auth-helpers-nextjs";
+import { cookies, headers } from "next/headers";
 const getServerSideSession = async () => {
   try {
     const supabase = createServerComponentSupabaseClient({
@@ -20,13 +20,13 @@ const getServerSideSession = async () => {
     console.log(error);
   }
 };
-
 export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   const session = await getServerSideSession();
+
   return (
     <html lang="en">
       <body>
@@ -35,3 +35,4 @@ export default async function RootLayout({
     </html>
   );
 }
+export const dynamic = "force-dynamic";

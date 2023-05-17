@@ -3,7 +3,7 @@ import { HEADER_HEIGHT } from "../../../public/config/constants";
 
 export const useStyles = createStyles((theme) => ({
   root: {
-    position: "relative",
+    position: "fixed",
     zIndex: 1,
   },
 

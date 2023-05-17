@@ -29,7 +29,7 @@ export const useStyles = createStyles((theme) => {
       "&:hover": {
         transform: "scale(1.05)",
         transformOrigin: "center",
-        borderColor: theme.colors.pink[9],
+        borderColor: theme.primaryColor,
       },
       [`&:hover .${getStylesRef("image")}`]: {
         boxShadow: `0 0 ${theme.spacing.xl} ${

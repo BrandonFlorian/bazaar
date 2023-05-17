@@ -6,6 +6,7 @@ import { Profile } from "@prisma/client";
 import React, { FormEvent, type FC, useState } from "react";
 import { PROFILES_ENDPOINT } from "../../../public/config/constants";
 import { notifications } from "@mantine/notifications";
+import { useSupabase } from "@/app/supabase-provider";
 type Props = { user: Profile | null };
 type FormValues = {
   email: string;
@@ -17,7 +18,7 @@ type FormValues = {
 
 export const ProfileForm: FC<Props> = (props: Props) => {
   const { user } = props;
-
+  const { supabase } = useSupabase();
   const form = useForm<FormValues>({
     initialValues: {
       email: user?.email || "",
@@ -138,7 +139,13 @@ export const ProfileForm: FC<Props> = (props: Props) => {
         />
 
         <Group position="apart" mt="xl">
-          <Button type="submit" radius="xl" loading={loading} fullWidth>
+          <Button
+            type="submit"
+            radius="sm"
+            loading={loading}
+            fullWidth
+            variant="light"
+          >
             Update Profile
           </Button>
         </Group>
