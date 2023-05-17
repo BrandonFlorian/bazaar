@@ -8,14 +8,25 @@ import {
   Paper,
   Transition,
   Text,
+  ActionIcon,
+  Indicator,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useStyles } from "./Navbar.styles";
 import { HEADER_HEIGHT, appPaths } from "../../../public/config/constants";
-import { IconBuildingStore, IconHome, IconLogin } from "@tabler/icons-react";
+import {
+  IconBuildingStore,
+  IconHome,
+  IconLogin,
+  IconPlant2,
+  IconShoppingCart,
+} from "@tabler/icons-react";
 import { type Session } from "@supabase/auth-helpers-nextjs";
 import Link from "next/link";
 import NavbarProfileButton from "../NavbarProfileButton/NavbarProfileButton";
+import React from "react";
+import Cart from "../Cart/Cart";
+import { useCart } from "@/context/cartContext";
 
 interface NavbarProps {
   session: Session | null | undefined;
@@ -35,13 +46,20 @@ export const Navbar: FC<NavbarProps> = (props: NavbarProps) => {
       label: "Products",
       icon: <IconBuildingStore />,
     },
+    {
+      link: appPaths.mint,
+      label: "Mint",
+      icon: <IconPlant2 />,
+    },
   ];
   const [opened, { toggle, close }] = useDisclosure(false);
   const [active, setActive] = useState(links[0].link);
 
   const [loading, setLoading] = useState(true);
+  const [open, setOpen] = useState(false);
 
   const { classes, cx } = useStyles();
+  const { items: cartItems } = useCart();
 
   const items = links.map((link) => (
     <Link
@@ -66,11 +84,33 @@ export const Navbar: FC<NavbarProps> = (props: NavbarProps) => {
     <Header height={HEADER_HEIGHT} className={classes.root}>
       <Container className={classes.header}>
         <Text>Logo</Text>
-        <Group spacing={5} className={classes.links}>
+        <Group spacing={5} className={classes.links} noWrap>
           {items}
 
           {session && session.user.role === "authenticated" ? (
-            <NavbarProfileButton session={session} />
+            <React.Fragment>
+              <Group position="apart" noWrap>
+                <NavbarProfileButton session={session} />
+
+                <Indicator
+                  label={cartItems.length.toString()}
+                  size={16}
+                  color="blue"
+                  disabled={cartItems.length === 0}
+                >
+                  <ActionIcon color="gray" onClick={() => setOpen(!open)}>
+                    <IconShoppingCart />
+                  </ActionIcon>
+                </Indicator>
+              </Group>
+              <Cart
+                title="Cart"
+                position="right"
+                open={open}
+                setOpen={setOpen}
+                buttonText="Checkout"
+              />
+            </React.Fragment>
           ) : (
             <Link
               href={appPaths.signIn}
@@ -82,7 +122,7 @@ export const Navbar: FC<NavbarProps> = (props: NavbarProps) => {
                 close();
               }}
             >
-              <Group spacing={3}>
+              <Group spacing={3} noWrap>
                 <IconLogin />
                 Sign In
               </Group>
