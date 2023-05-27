@@ -25,6 +25,7 @@ model Product {
   createdAt       DateTime  @default(now()) @map("created_at")
   updatedAt       DateTime  @default(now()) @updatedAt @map("updated_at")
   seller          Profile   @relation(fields: [sellerId], references: [id])
+  orderItems      OrderItem[]
   @@map("products")
 }
 
@@ -41,5 +42,30 @@ model Profile {
   createdAt       DateTime  @default(now()) @map("created_at")
   updatedAt       DateTime  @default(now()) @updatedAt @map("updated_at")
   products        Product[]
+  orders          Order[]
   @@map("profile")
+}
+
+model Order {
+  id           String        @id @default(uuid())
+  userId       String        @map("user_id")
+  orderStatus  String        @default("pending") @map("order_status")
+  createdAt    DateTime      @default(now()) @map("created_at")
+  updatedAt    DateTime      @default(now()) @updatedAt @map("updated_at")
+  user         Profile       @relation(fields: [userId], references: [id])
+  orderItems   OrderItem[]
+  @@map("orders")
+}
+
+model OrderItem {
+  id         String    @id @default(uuid())
+  orderId    String    @map("order_id")
+  productId  String    @map("product_id")
+  quantity   Int
+  price      Float     @map("price")
+  createdAt  DateTime  @default(now()) @map("created_at")
+  updatedAt  DateTime  @default(now()) @updatedAt @map("updated_at")
+  order      Order     @relation(fields: [orderId], references: [id])
+  product    Product   @relation(fields: [productId], references: [id])
+  @@map("order_items")
 }

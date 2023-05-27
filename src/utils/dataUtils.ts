@@ -37,3 +37,10 @@ export const formatPaginatedEndpoint = (
 
   return `${baseUrl}${queryString}&offset=${page}`;
 };
+
+export const nullIfEmpty = (prop: string | undefined) => {
+  if (prop === "") {
+    return undefined;
+  }
+  return prop;
+};
