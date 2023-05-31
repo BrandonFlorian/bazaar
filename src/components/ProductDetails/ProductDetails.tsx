@@ -5,19 +5,17 @@ import {
   Text,
   Group,
   Button,
-  TextInput,
   Grid,
   Card,
   Center,
-  Select,
   NumberInputHandlers,
   ActionIcon,
   NumberInput,
   rem,
 } from "@mantine/core";
-import { Product } from "@prisma/client";
+import { type Product } from "@prisma/client";
 import Image from "next/image";
-import React, { FC, useRef, useState } from "react";
+import React, { type FC, useRef, useState } from "react";
 import { IMAGE_BUCKET } from "../../../public/config/constants";
 import { useStyles } from "./ProductDetails.styles";
 import { formatPrice } from "@/utils/currencyUtils";

@@ -15,17 +15,29 @@ import Image from "next/image";
 import { IMAGE_BUCKET } from "../../../public/config/constants";
 import React from "react";
 import { useStyles } from "./Checkout.styles";
-type Props = {};
+import { CheckoutForm } from "../CheckoutForm";
+
+import { type Profile } from "@prisma/client";
+import Order from "../Order/Order";
+import { useOrder } from "@/hooks/useOrder";
+
+type Props = {
+  profile: Profile | null;
+};
 export const Checkout: FC<Props> = (props: Props) => {
+  const { profile } = props;
+
   const [active, setActive] = useState(0);
+  const [orderId, setOrderId] = useState<string | undefined>();
   const { items, removeItem } = useCart();
   const { classes } = useStyles();
+
+  const { data, mutate } = useOrder(true, "/api/order", orderId);
 
   const nextStep = () =>
     setActive((current) => (current < 3 ? current + 1 : current));
   const prevStep = () =>
     setActive((current) => (current > 0 ? current - 1 : current));
-
   return (
     <Container>
       <Stepper
@@ -75,13 +87,15 @@ export const Checkout: FC<Props> = (props: Props) => {
           </Container>
         </Stepper.Step>
         <Stepper.Step label="Second step" description="Verify Payment">
-          Step 2: Verify Payment
-        </Stepper.Step>
-        <Stepper.Step label="Final step" description="Complete Purchase">
-          Step 3: Complete Purchase
+          <CheckoutForm
+            profile={profile}
+            nextStep={nextStep}
+            setOrderId={setOrderId}
+            mutate={mutate}
+          />
         </Stepper.Step>
         <Stepper.Completed>
-          Completed, click back button to get to previous step
+          <Order order={data} />
         </Stepper.Completed>
       </Stepper>
 
