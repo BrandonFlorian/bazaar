@@ -11,6 +11,7 @@ This project showcases a fast and responsive e-commerce platform, leveraging the
 - Server-rendered pages with Next.js
 - User authentication and data storage with Supabase
 - Database management using Prisma and PostgreSQL
+- Payment processing via Circle (USDC)
 - Modern and responsive UI with Mantine components
 - Environment variables for easy configuration
 
@@ -54,8 +55,10 @@ Create a `.env.local` file in the project root with the following variables:
 - SUPABASE_ANON_KEY=<your-supabase-anon-key>
 - NEXT_PUBLIC_IMAGE_HOSTNAME=<your-image-hostname>
 - NEXT_PUBLIC_IMAGE_BUCKET=<your-image-bucket>
+- CIRCLE_API_KEY=<your-circle-api-key>
+- NEXT_PUBLIC_CIRCLE_API=<your-circle-api>
 
-Replace the placeholders with your actual values. These variables are necessary for connecting your application to your Supabase instance and database.
+  Replace the placeholders with your actual values. These variables are necessary for connecting your application to your Supabase instance and database.
 
 4. Run the development server:
 
