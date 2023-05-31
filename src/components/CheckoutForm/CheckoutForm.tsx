@@ -1,7 +1,7 @@
-import React, { FC, FormEvent } from "react";
+import React, { type FC, FormEvent } from "react";
 import { Button, Container, Select, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { Profile } from "@prisma/client";
+import { type Profile } from "@prisma/client";
 import { CartItem, useCart } from "@/context/cartContext";
 import { CheckoutFormValues } from "./CheckoutForm.types";
 import { useCheckoutForm } from "./useCheckoutForm";

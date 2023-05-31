@@ -1,7 +1,7 @@
 "use client";
 import React, { type FC } from "react";
 import { Card, Text, Group, Button, Badge } from "@mantine/core";
-import { Product } from "@prisma/client";
+import { type Product } from "@prisma/client";
 import { useStyles } from "./styles";
 import { formatPrice } from "@/utils/currencyUtils";
 import Image from "next/image";
