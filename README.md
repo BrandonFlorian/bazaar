@@ -8,7 +8,7 @@ This project showcases a fast and responsive e-commerce platform, leveraging the
 
 ## Features
 
-- Server-rendered pages with Next.js
+- Server-rendered pages with Next.js 13 app directory
 - User authentication and data storage with Supabase
 - Database management using Prisma and PostgreSQL
 - Payment processing via Circle (USDC)
