@@ -1,7 +1,7 @@
 import { fetcher } from "@/utils/dataUtils";
 import { SWR_RETRY_COUNT } from "../../public/config/constants";
 import useSWR from "swr";
-import { OrderResponse } from "@/types/circle";
+import { OrderWithItemsAndProducts } from "@/types/dataTypes";
 export const useOrder = (
   enabled: boolean,
   baseUrl: string | undefined,
@@ -13,7 +13,7 @@ export const useOrder = (
   }
 
   const { data, error, isLoading, isValidating, mutate } =
-    useSWR<OrderResponse>(
+    useSWR<OrderWithItemsAndProducts>(
       isEnabled ? `${baseUrl}?orderId=${order_id}` : null,
       fetcher,
       {

@@ -33,6 +33,7 @@ export const Checkout: FC<Props> = (props: Props) => {
   const { classes } = useStyles();
 
   const { data, mutate } = useOrder(true, "/api/order", orderId);
+  console.log("data: ", data);
 
   const nextStep = () =>
     setActive((current) => (current < 3 ? current + 1 : current));

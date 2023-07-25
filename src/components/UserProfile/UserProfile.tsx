@@ -25,6 +25,8 @@ import ProfileForm from "../ProfileForm/ProfileForm";
 import { useStyles } from "./UserProfile.styles";
 import { useSupabase } from "@/app/supabase-provider";
 import { useRouter } from "next/navigation";
+import { OrderWithItemsAndProducts } from "@/types/dataTypes";
+import PreviousOrders from "../PreviousOrders";
 
 const tabs = {
   account: [
@@ -47,10 +49,11 @@ const tabs = {
 };
 type Props = {
   user: Profile | null;
+  orders: OrderWithItemsAndProducts[] | null;
 };
 
 export const UserProfile: FC<Props> = (props: Props) => {
-  const { user } = props;
+  const { user, orders } = props;
   const { classes, cx } = useStyles();
   const { supabase } = useSupabase();
   const router = useRouter();
@@ -82,12 +85,22 @@ export const UserProfile: FC<Props> = (props: Props) => {
           return <ProfileForm user={user} />;
         case "Notifications":
           return <></>;
+        case "Billing":
+          return <></>;
+        case "Security":
+          return <></>;
+        case "Authentication":
+          return <></>;
+        case "Other Settings":
+          return <></>;
+        case "Orders":
+          return <PreviousOrders orders={orders} />;
         default:
           return <></>;
       }
     };
     setCurrentComponent(getCurrentTab());
-  }, [active, user]);
+  }, [active, orders, user]);
 
   return (
     <React.Fragment>

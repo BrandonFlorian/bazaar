@@ -11,7 +11,7 @@ import {
 import { CardService } from "@/services/cardService";
 import { OrderItem } from "@prisma/client";
 import { PaymentService } from "@/services/paymentService";
-
+import { OrderWithItemsAndProducts } from "@/types/dataTypes";
 export async function POST(request: NextRequest) {
   if (request.method !== "POST") {
     console.error("Request method is not POST");
@@ -39,6 +39,8 @@ export async function POST(request: NextRequest) {
       metadata,
     } = body.cardPayload;
 
+    console.log("body", body);
+
     const orderId: string = body.order_id;
 
     //prepare card details
@@ -65,13 +67,21 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    console.log("cardResponse", cardResponse);
+
     //get order from DB
-    const order = await fetch(`${LOCALHOST_API}order?orderId=${orderId}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }).then((res) => res.json());
+    console.log(`${LOCALHOST_API}/order?orderId=${orderId}`);
+    const order: OrderWithItemsAndProducts = await fetch(
+      `${LOCALHOST_API}/order?orderId=${orderId}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    ).then((res) => res.json());
+
+    console.log("order", order);
 
     if (!order) {
       return NextResponse.json(
@@ -81,10 +91,11 @@ export async function POST(request: NextRequest) {
     }
 
     //go through order items and add up the total amount
-    const paymentAmount: number = order.order_items
+    const paymentAmount: number = order.orderItems
       .map((item: OrderItem) => Number(item.price))
       .reduce((a: number, b: number) => a + b, 0);
     const paymentAmountString = paymentAmount.toFixed(2);
+    console.log("paymentAmountString", paymentAmountString);
 
     //prepare payment payload
     const paymentPayload: CreateCardPaymentPayload = {
@@ -109,9 +120,11 @@ export async function POST(request: NextRequest) {
       encryptedData: encryptedData,
       //channel: "none",
     };
+    console.log("paymentPayload", paymentPayload);
 
     //send payment to circle API
     const paymentResponse = await PaymentService.sendPayment(paymentPayload);
+    console.log("paymentResponse", paymentResponse);
     // Polling the payment status
     let paymentStatus = paymentResponse.status;
 
@@ -123,13 +136,15 @@ export async function POST(request: NextRequest) {
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
       // Fetch the payment status from your /api/payment endpoint
-      const statusResponse = await fetch(`${LOCALHOST_API}circle/payment`, {
+      console.log("getting status...  ");
+      const statusResponse = await fetch(`${LOCALHOST_API}/circle/payment`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ paymentId: paymentResponse.id }),
       });
+      console.log("statusResponse", statusResponse);
       const statusData = await statusResponse.json();
 
       paymentStatus = statusData.status;
@@ -137,8 +152,9 @@ export async function POST(request: NextRequest) {
 
       // Break the loop if the payment status is 'paid'
       if (paymentStatus !== "pending") {
+        console.log("paymentStatus", paymentStatus);
         //update the order status to paid
-        const updateOrderResponse = await fetch(`${LOCALHOST_API}order`, {
+        const updateOrderResponse = await fetch(`${LOCALHOST_API}/order`, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
@@ -148,7 +164,9 @@ export async function POST(request: NextRequest) {
             order_id: orderId,
           }),
         });
+        console.log("updateOrderResponse", updateOrderResponse);
         const updateOrderData = await updateOrderResponse.json();
+        console.log("updateOrderData", updateOrderData);
 
         return NextResponse.json(statusData, {
           status: HTTP_STATUS_CODES.OK,

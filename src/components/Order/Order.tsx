@@ -1,20 +1,21 @@
 import React, { FC, useEffect, useState } from "react";
 import { Container, Text, Stack } from "@mantine/core";
 import { OrderItem } from "@prisma/client";
-import { OrderResponse } from "@/types/circle";
 import { formatPrice } from "@/utils/currencyUtils";
+import { OrderWithItemsAndProducts } from "@/types/dataTypes";
 type Props = {
-  order: OrderResponse | undefined;
+  order: OrderWithItemsAndProducts | undefined;
 };
 
 export const Order: FC<Props> = (props: Props) => {
   const { order } = props;
+  console.log("order: ", order);
   const [total, setTotal] = useState<number>(0);
 
   useEffect(() => {
     if (order !== undefined) {
       let total = 0;
-      order.order_items.forEach((item) => {
+      order.orderItems.forEach((item) => {
         total += Number(item.price) * item.quantity;
       });
       setTotal(total);
@@ -30,8 +31,8 @@ export const Order: FC<Props> = (props: Props) => {
         <React.Fragment>
           <Stack align="center">
             <Text>Order ID: {order.id}</Text>
-            <Text>Order Status: {order.order_status}</Text>
-            {order.order_items.map((item: OrderItem) => (
+            <Text>Order Status: {order.orderStatus}</Text>
+            {order.orderItems.map((item: OrderItem) => (
               <React.Fragment key={item.id}>
                 <Text>Quantity: {item.quantity}</Text>
                 <Text>Price: {formatPrice(Number(item.price))}</Text>

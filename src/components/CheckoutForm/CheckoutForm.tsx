@@ -17,6 +17,8 @@ type Props = {
 };
 export const CheckoutForm: FC<Props> = (props: Props) => {
   const { items, clearCart } = useCart();
+
+  console.log(items);
   const { prepareCardPayload, createEncryptedCard } = useCheckoutForm();
   const { profile, setOrderId, mutate } = props;
 

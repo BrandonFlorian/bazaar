@@ -24,7 +24,8 @@ export const USERNAME_ENDPOINT: string =
   process.env.NEXT_PUBLIC_USERNAME_ENDPOINT || "";
 export const USERNAME_CLIENT_ENDPOINT: string =
   process.env.NEXT_PUBLIC_USERNAME_CLIENT_ENDPOINT || "";
-
+export const ORDERS_ENDPOINT: string =
+  process.env.NEXT_PUBLIC_ORDER_ENDPOINT || "";
 export const IMAGE_HOSTNAME: string =
   process.env.NEXT_PUBLIC_IMAGE_HOSTNAME || "";
 

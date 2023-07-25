@@ -3,6 +3,8 @@ import { HTTP_STATUS_CODES } from "../../../../public/config/constants";
 import { Order } from "@prisma/client";
 import { OrderItems } from "@/types/circle";
 import prisma from "@/utils/prisma";
+import { OrderWithItemsAndProducts } from "@/types/dataTypes";
+
 export async function POST(request: NextRequest) {
   if (request.method !== "POST") {
     console.error("Request method is not POST");
@@ -16,6 +18,7 @@ export async function POST(request: NextRequest) {
   try {
     // Parse the request body
     const body = JSON.parse(await request.text());
+    console.log("body", body);
     // Extract and validate required fields
     const { profile_id, items } = body;
     if (!profile_id || !items || items.length === 0) {
@@ -33,7 +36,7 @@ export async function POST(request: NextRequest) {
         // Use the Prisma `create` function to create the associated order items
         orderItems: {
           create: items.map((item: OrderItems) => ({
-            product_id: item.product_id,
+            productId: item.product_id,
             quantity: item.quantity,
             price: item.price,
           })),
@@ -66,23 +69,58 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const order_id = searchParams.get("orderId");
 
-    if (order_id) {
-      const order = await prisma?.order.findUnique({
-        where: {
-          id: order_id,
-        },
-        include: {
-          orderItems: true,
-        },
-      });
+    if (order_id && prisma) {
+      const order: OrderWithItemsAndProducts | null =
+        await prisma.order.findUnique({
+          where: {
+            id: order_id,
+          },
+          include: {
+            orderItems: {
+              include: {
+                product: true,
+              },
+            },
+          },
+        });
       return NextResponse.json(order, { status: HTTP_STATUS_CODES.OK });
     }
-    const orders = await prisma?.order.findMany({
-      include: {
-        orderItems: true,
-      },
-    });
-    return NextResponse.json(orders, { status: HTTP_STATUS_CODES.OK });
+
+    const user_id = searchParams.get("userId");
+
+    if (user_id && prisma) {
+      const order: OrderWithItemsAndProducts[] = await prisma.order.findMany({
+        where: {
+          userId: user_id,
+        },
+        include: {
+          orderItems: {
+            include: {
+              product: true,
+            },
+          },
+        },
+      });
+
+      return NextResponse.json(order, { status: HTTP_STATUS_CODES.OK });
+    }
+    if (prisma) {
+      const orders: OrderWithItemsAndProducts[] = await prisma.order.findMany({
+        include: {
+          orderItems: {
+            include: {
+              product: true,
+            },
+          },
+        },
+      });
+      return NextResponse.json(orders, { status: HTTP_STATUS_CODES.OK });
+    } else {
+      return NextResponse.json(
+        { message: "Server Error" },
+        { status: HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR }
+      );
+    }
   } catch (error) {
     console.error("Error getting orders:", error);
     return NextResponse.json(
