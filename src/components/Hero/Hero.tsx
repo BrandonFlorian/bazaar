@@ -24,7 +24,7 @@ export const Hero: FC<Props> = () => {
                     component="span"
                     inherit
                     variant="gradient"
-                    gradient={{ from: "yellow", to: "green" }}
+                    //gradient={{ from: "yellow", to: "green" }}
                   >
                     fully featured{" "}
                   </Text>
@@ -43,7 +43,7 @@ export const Hero: FC<Props> = () => {
 
               <Button
                 variant="gradient"
-                gradient={{ from: "yellow", to: "green" }}
+                //gradient={{ from: "yellow", to: "green" }}
                 size="xl"
                 className={classes.control}
                 mt={40}

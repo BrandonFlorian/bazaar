@@ -7,14 +7,13 @@ import {
   type MantineThemeOverride,
   AppShell,
 } from "@mantine/core";
+import { DatesProvider } from "@mantine/dates";
 import { useServerInsertedHTML } from "next/navigation";
 import { useHotkeys, useLocalStorage } from "@mantine/hooks";
 import lightTheme from "../themes/lightTheme";
 import darkTheme from "../themes/darkTheme";
 import SupabaseProvider from "./supabase-provider";
 import Navbar from "@/components/Navbar";
-import { appPaths } from "../../public/config/constants";
-import { IconHome, IconBuildingStore, IconHelp } from "@tabler/icons-react";
 import { Notifications } from "@mantine/notifications";
 import { type Session } from "@supabase/auth-helpers-nextjs";
 export default function RootStyleRegistry({
@@ -47,24 +46,6 @@ export default function RootStyleRegistry({
     />
   ));
 
-  const links = [
-    {
-      link: appPaths.home,
-      label: "Home",
-      icon: <IconHome />,
-    },
-    {
-      link: appPaths.products,
-      label: "Products",
-      icon: <IconBuildingStore />,
-    },
-    {
-      link: appPaths.faq,
-      label: "Support",
-      icon: <IconHelp />,
-    },
-  ];
-
   return (
     <SupabaseProvider>
       <CacheProvider value={cache}>
@@ -74,8 +55,18 @@ export default function RootStyleRegistry({
           theme={theme}
           key={theme.colorScheme}
         >
-          <Notifications />
-          <AppShell header={<Navbar session={session} />}>{children}</AppShell>
+          <DatesProvider
+            settings={{
+              locale: "en-US",
+              firstDayOfWeek: 0,
+              weekendDays: [0, 6],
+            }}
+          >
+            <Notifications />
+            <AppShell header={<Navbar session={session} />}>
+              {children}
+            </AppShell>
+          </DatesProvider>
         </MantineProvider>
       </CacheProvider>
     </SupabaseProvider>

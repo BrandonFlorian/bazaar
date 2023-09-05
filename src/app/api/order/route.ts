@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { HTTP_STATUS_CODES } from "../../../../public/config/constants";
-import { Order } from "@prisma/client";
-import { OrderItems } from "@/types/circle";
-import prisma from "@/utils/prisma";
+import { prisma } from "@/utils/prismaClient";
 import { OrderWithItemsAndProducts } from "@/types/dataTypes";
+import { Order, OrderItem } from "@prisma/client";
+import { authorizeUser } from "@/utils/serverUtils";
+import { CartItem } from "@/context/cartContext";
 
 export async function POST(request: NextRequest) {
   if (request.method !== "POST") {
@@ -16,33 +17,48 @@ export async function POST(request: NextRequest) {
   }
 
   try {
+    const token = await authorizeUser(request);
+
+    if (!token) {
+      // return NextResponse.json(
+      //   { message: "Unauthorized" },
+      //   { status: HTTP_STATUS_CODES.UNAUTHORIZED }
+      // );
+      console.log("unauthorized user token: ", token);
+    }
+    // console.log("authorized user token: ", token);
     // Parse the request body
     const body = JSON.parse(await request.text());
-    console.log("body", body);
     // Extract and validate required fields
-    const { profile_id, items } = body;
-    if (!profile_id || !items || items.length === 0) {
+    const { profileId, items } = body;
+    console.log("extracted profileId: ", profileId);
+    console.log("extracted items: ", items);
+
+    if (!profileId || !items || items.length === 0) {
       return NextResponse.json(
         { message: "Missing required fields" },
         { status: HTTP_STATUS_CODES.BAD_REQUEST }
       );
     }
 
-    // Start a transaction to create the order and order items
-    const order: Order | undefined = await prisma?.order.create({
+    const orderItems: OrderItem[] = items.map((item: CartItem) => ({
+      quantity: item.quantity,
+      productId: item.id,
+      price: item.price,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    }));
+
+    const order: Order = await prisma.order.create({
       data: {
-        userId: profile_id,
+        userId: profileId,
         orderStatus: "pending",
-        // Use the Prisma `create` function to create the associated order items
         orderItems: {
-          create: items.map((item: OrderItems) => ({
-            productId: item.product_id,
-            quantity: item.quantity,
-            price: item.price,
-          })),
+          create: orderItems,
         },
       },
     });
+    console.log("order: ", order);
 
     // Return the created order
     return NextResponse.json(order);
@@ -65,6 +81,14 @@ export async function GET(request: NextRequest) {
   }
 
   try {
+    const token = await authorizeUser(request);
+
+    if (!token) {
+      return NextResponse.json(
+        { message: "Unauthorized" },
+        { status: HTTP_STATUS_CODES.UNAUTHORIZED }
+      );
+    }
     //check for order id
     const { searchParams } = new URL(request.url);
     const order_id = searchParams.get("orderId");
@@ -140,6 +164,14 @@ export async function PUT(request: NextRequest) {
   }
 
   try {
+    const token = await authorizeUser(request);
+
+    if (!token) {
+      return NextResponse.json(
+        { message: "Unauthorized" },
+        { status: HTTP_STATUS_CODES.UNAUTHORIZED }
+      );
+    }
     const body = JSON.parse(await request.text());
     const { order_id, order_status } = body;
     if (!order_id || !order_status) {

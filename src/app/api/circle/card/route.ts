@@ -39,9 +39,7 @@ export async function POST(request: NextRequest) {
       metadata,
     } = body.cardPayload;
 
-    console.log("body", body);
-
-    const orderId: string = body.order_id;
+    const orderId: string = body.orderId;
 
     //prepare card details
     const cardDetails: CreateCardPayload = {
@@ -67,10 +65,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    console.log("cardResponse", cardResponse);
-
     //get order from DB
-    console.log(`${LOCALHOST_API}/order?orderId=${orderId}`);
     const order: OrderWithItemsAndProducts = await fetch(
       `${LOCALHOST_API}/order?orderId=${orderId}`,
       {
@@ -80,8 +75,6 @@ export async function POST(request: NextRequest) {
         },
       }
     ).then((res) => res.json());
-
-    console.log("order", order);
 
     if (!order) {
       return NextResponse.json(
@@ -95,7 +88,6 @@ export async function POST(request: NextRequest) {
       .map((item: OrderItem) => Number(item.price))
       .reduce((a: number, b: number) => a + b, 0);
     const paymentAmountString = paymentAmount.toFixed(2);
-    console.log("paymentAmountString", paymentAmountString);
 
     //prepare payment payload
     const paymentPayload: CreateCardPaymentPayload = {
@@ -120,11 +112,9 @@ export async function POST(request: NextRequest) {
       encryptedData: encryptedData,
       //channel: "none",
     };
-    console.log("paymentPayload", paymentPayload);
 
     //send payment to circle API
     const paymentResponse = await PaymentService.sendPayment(paymentPayload);
-    console.log("paymentResponse", paymentResponse);
     // Polling the payment status
     let paymentStatus = paymentResponse.status;
 
@@ -136,7 +126,6 @@ export async function POST(request: NextRequest) {
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
       // Fetch the payment status from your /api/payment endpoint
-      console.log("getting status...  ");
       const statusResponse = await fetch(`${LOCALHOST_API}/circle/payment`, {
         method: "POST",
         headers: {
@@ -144,7 +133,6 @@ export async function POST(request: NextRequest) {
         },
         body: JSON.stringify({ paymentId: paymentResponse.id }),
       });
-      console.log("statusResponse", statusResponse);
       const statusData = await statusResponse.json();
 
       paymentStatus = statusData.status;
@@ -152,7 +140,6 @@ export async function POST(request: NextRequest) {
 
       // Break the loop if the payment status is 'paid'
       if (paymentStatus !== "pending") {
-        console.log("paymentStatus", paymentStatus);
         //update the order status to paid
         const updateOrderResponse = await fetch(`${LOCALHOST_API}/order`, {
           method: "PUT",
@@ -164,9 +151,7 @@ export async function POST(request: NextRequest) {
             order_id: orderId,
           }),
         });
-        console.log("updateOrderResponse", updateOrderResponse);
-        const updateOrderData = await updateOrderResponse.json();
-        console.log("updateOrderData", updateOrderData);
+        const updatedOrderData = await updateOrderResponse.json();
 
         return NextResponse.json(statusData, {
           status: HTTP_STATUS_CODES.OK,

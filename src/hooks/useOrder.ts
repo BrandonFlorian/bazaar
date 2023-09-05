@@ -2,20 +2,24 @@ import { fetcher } from "@/utils/dataUtils";
 import { SWR_RETRY_COUNT } from "../../public/config/constants";
 import useSWR from "swr";
 import { OrderWithItemsAndProducts } from "@/types/dataTypes";
+
 export const useOrder = (
   enabled: boolean,
   baseUrl: string | undefined,
-  order_id: string | undefined
+  orderId: string | undefined,
+  accessToken?: string | undefined
 ) => {
   let isEnabled = false;
-  if (enabled && baseUrl && order_id) {
+  if (enabled && baseUrl && orderId) {
     isEnabled = true;
   }
 
+  const fetchWithToken = (url: string) => fetcher(url, accessToken);
+
   const { data, error, isLoading, isValidating, mutate } =
     useSWR<OrderWithItemsAndProducts>(
-      isEnabled ? `${baseUrl}?orderId=${order_id}` : null,
-      fetcher,
+      isEnabled ? `${baseUrl}?orderId=${orderId}` : null,
+      fetchWithToken,
       {
         onErrorRetry: (error, key, config, revalidate, { retryCount }) => {
           if (retryCount >= SWR_RETRY_COUNT) return;

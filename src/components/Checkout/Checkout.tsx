@@ -20,20 +20,27 @@ import { CheckoutForm } from "../CheckoutForm";
 import { type Profile } from "@prisma/client";
 import Order from "../Order/Order";
 import { useOrder } from "@/hooks/useOrder";
+import { type Session } from "@supabase/auth-helpers-nextjs";
 
 type Props = {
   profile: Profile | null;
+  session: Session | null;
 };
 export const Checkout: FC<Props> = (props: Props) => {
-  const { profile } = props;
+  const { profile, session } = props;
 
   const [active, setActive] = useState(0);
   const [orderId, setOrderId] = useState<string | undefined>();
   const { items, removeItem } = useCart();
   const { classes } = useStyles();
 
-  const { data, mutate } = useOrder(true, "/api/order", orderId);
-  console.log("data: ", data);
+  const { data, mutate } = useOrder(
+    true,
+    "/api/order",
+    orderId,
+    session?.access_token
+  );
+  //console.log("data: ", data);
 
   const nextStep = () =>
     setActive((current) => (current < 3 ? current + 1 : current));
@@ -93,6 +100,7 @@ export const Checkout: FC<Props> = (props: Props) => {
             nextStep={nextStep}
             setOrderId={setOrderId}
             mutate={mutate}
+            session={session}
           />
         </Stepper.Step>
         <Stepper.Completed>

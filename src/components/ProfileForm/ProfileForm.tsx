@@ -1,6 +1,15 @@
 "use client";
 
-import { Container, Text, Group, Button, TextInput } from "@mantine/core";
+import {
+  Container,
+  Text,
+  Group,
+  Button,
+  TextInput,
+  Textarea,
+  Avatar,
+} from "@mantine/core";
+import { DatePickerInput, DateValue } from "@mantine/dates";
 import { useForm } from "@mantine/form";
 import { Profile } from "@prisma/client";
 import React, { FormEvent, type FC, useState } from "react";
@@ -9,11 +18,15 @@ import { notifications } from "@mantine/notifications";
 import { useSupabase } from "@/app/supabase-provider";
 type Props = { user: Profile | null };
 type FormValues = {
+  id: string;
   email: string;
   firstName: string;
   lastName: string;
   phoneNumber: string;
   username: string;
+  bio?: string;
+  profileImageUrl?: string;
+  dateOfBirth?: Date;
 };
 
 export const ProfileForm: FC<Props> = (props: Props) => {
@@ -21,11 +34,15 @@ export const ProfileForm: FC<Props> = (props: Props) => {
   const { supabase } = useSupabase();
   const form = useForm<FormValues>({
     initialValues: {
+      id: user?.id || "",
       email: user?.email || "",
       firstName: user?.firstName || "",
       lastName: user?.lastName || "",
       phoneNumber: user?.phoneNumber || "",
       username: user?.username || "",
+      bio: user?.bio || "",
+      profileImageUrl: user?.profileImageUrl || "",
+      dateOfBirth: user?.dateOfBirth || undefined,
     },
 
     validate: {
@@ -37,17 +54,22 @@ export const ProfileForm: FC<Props> = (props: Props) => {
       username: (val: string) => (val ? null : "Username is required"),
     },
   });
+  console.log(user);
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (values: FormValues) => {
     setLoading(true);
     try {
+      const session = await supabase.auth.getSession();
+      const accessToken = session.data.session?.access_token;
+      if (!accessToken) throw new Error("No access token found");
       const result = await fetch(
         `${PROFILES_ENDPOINT}?username=${user?.username}`,
         {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `${accessToken}`,
           },
           body: JSON.stringify(values),
         }
@@ -76,7 +98,7 @@ export const ProfileForm: FC<Props> = (props: Props) => {
   return (
     <Container size="xs">
       <Text size="lg" weight={500}>
-        Profile Info
+        Profile
       </Text>
 
       <form
@@ -87,6 +109,21 @@ export const ProfileForm: FC<Props> = (props: Props) => {
           })();
         }}
       >
+        <Avatar
+          src={form.values.profileImageUrl}
+          alt={form.values.firstName}
+          radius="xl"
+          size="xl"
+          style={{ margin: "0 auto" }}
+          onClick={() => {
+            notifications.show({
+              title: "Profile image",
+              message: "Profile image is not editable yet",
+              color: "blue",
+            });
+          }}
+        />
+
         <TextInput
           required
           label="First Name"
@@ -136,6 +173,31 @@ export const ProfileForm: FC<Props> = (props: Props) => {
             form.setFieldValue("username", event.currentTarget.value)
           }
           error={form.errors.username && String(form.errors.username)}
+        />
+
+        <DatePickerInput
+          label="Date of Birth"
+          placeholder="Date of Birth"
+          value={
+            form?.values?.dateOfBirth
+              ? new Date(form.values.dateOfBirth)
+              : undefined
+          }
+          onChange={(event) =>
+            form.setFieldValue("dateOfBirth", event || undefined)
+          }
+          error={form.errors.dateOfBirth && String(form.errors.dateOfBirth)}
+        />
+
+        <Textarea
+          placeholder="Your Profile Header"
+          label="Bio"
+          description="Enter a header for your public profile"
+          value={form.values.bio}
+          onChange={(event) =>
+            form.setFieldValue("bio", event.currentTarget.value)
+          }
+          error={form.errors.bio && String(form.errors.bio)}
         />
 
         <Group position="apart" mt="xl">

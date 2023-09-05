@@ -1,7 +1,6 @@
-import { PrismaClient } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 import { HTTP_STATUS_CODES } from "../../../../public/config/constants";
-const prisma = new PrismaClient();
+import { prisma } from "@/utils/prismaClient";
 export async function POST(request: NextRequest) {
   if (request.method !== "POST") {
     console.error("Request method is not POST");
@@ -33,3 +32,5 @@ export async function POST(request: NextRequest) {
     );
   }
 }
+
+export async function GET(request: NextRequest) {}

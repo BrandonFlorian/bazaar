@@ -11,7 +11,6 @@ const getProducts = async (): Promise<Product[]> => {
 
 export default async function Products() {
   const products: Product[] = await getProducts();
-  console.log("products: ", products);
 
   return (
     <div>

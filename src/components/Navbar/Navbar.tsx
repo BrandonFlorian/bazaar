@@ -90,12 +90,21 @@ export const Navbar: FC<NavbarProps> = (props: NavbarProps) => {
           {session && session.user.role === "authenticated" ? (
             <React.Fragment>
               <Group position="apart" noWrap>
-                <NavbarProfileButton session={session} />
+                <Link
+                  href="#"
+                  className={cx(classes.link, {
+                    [classes.linkActive]: active === "profile",
+                  })}
+                  onClick={() => {
+                    setActive(appPaths.profile);
+                  }}
+                >
+                  <NavbarProfileButton session={session} />
+                </Link>
 
                 <Indicator
                   label={cartItems.length.toString()}
                   size={16}
-                  color="blue"
                   disabled={cartItems.length === 0}
                 >
                   <ActionIcon color="gray" onClick={() => setOpen(!open)}>

@@ -9,18 +9,19 @@ import { CreateCardPayload, PaymentData } from "@/types/circle";
 import PaymentCheckModal from "../PaymentCheckModal";
 import CountrySelect from "../CountrySelect";
 import { countryPhoneCodes } from "../../../public/config/constants";
+import { type Session } from "@supabase/auth-helpers-nextjs";
+import { createOrder, createPayment } from "@/utils/clientUtils";
 type Props = {
   profile: Profile | null;
+  session: Session | null;
   nextStep: () => void;
   setOrderId: (orderId: string) => void;
   mutate: () => void;
 };
 export const CheckoutForm: FC<Props> = (props: Props) => {
   const { items, clearCart } = useCart();
-
-  console.log(items);
   const { prepareCardPayload, createEncryptedCard } = useCheckoutForm();
-  const { profile, setOrderId, mutate } = props;
+  const { profile, setOrderId, mutate, session } = props;
 
   const [isLoading, setIsLoading] = React.useState(false);
   const [opened, setOpened] = React.useState(false);
@@ -36,29 +37,54 @@ export const CheckoutForm: FC<Props> = (props: Props) => {
       setStatus("pending");
       setStatusText("Creating Order...");
       setOpened(true);
-      const order = await createOrder();
-      setOrderId(order.id);
+      console.log("Payload: ", profile?.id, session?.access_token, items);
+      const order = await createOrder(
+        profile?.id,
+        session?.access_token,
+        items
+      );
+
+      if (!order) {
+        console.log("order not created");
+        return;
+      }
+      console.log("order: ", order);
+      setOrderId(order?.id);
 
       setStatusText("Encrypting Card details...");
       const paymentData: PaymentData = await prepareCardPayload(values);
+
       const cardPayload: CreateCardPayload | undefined =
         await createEncryptedCard(paymentData);
-
+      console.log("cardPayload: ", cardPayload);
       setStatusText("Processing Payment...");
-      const response = await fetch("/api/circle/card", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        //body will include the cardPayload and the id of the order
-        body: JSON.stringify({
-          order_id: order.id,
-          cardPayload: cardPayload,
-        }),
-      });
 
-      const data = await response.json();
-      switch (data.status) {
+      if (!cardPayload) {
+        console.log("cardPayload not created");
+        return;
+      }
+
+      const payment = await createPayment(
+        order?.id,
+        session?.access_token,
+        cardPayload
+      );
+
+      // = await fetch("/api/circle/card", {
+      //   method: "POST",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //   },
+      //   //body will include the cardPayload and the id of the order
+      //   body: JSON.stringify({
+      //     order_id: order?.id || "",
+      //     cardPayload: cardPayload,
+      //   }),
+      // });
+
+      // const data = await payment.json();
+      console.log("payment: ", payment);
+      switch (payment.status) {
         case "pending":
           setStatusText("Payment Pending...");
           break;
@@ -78,7 +104,7 @@ export const CheckoutForm: FC<Props> = (props: Props) => {
           setStatusText("Payment Pending...");
           break;
       }
-      setStatus(data.status);
+      setStatus(payment.status);
 
       setIsLoading(false);
       setOpened(false);
@@ -91,29 +117,29 @@ export const CheckoutForm: FC<Props> = (props: Props) => {
     }
   };
 
-  const createOrder = async () => {
-    try {
-      const response = await fetch("/api/order", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          profile_id: profile?.id,
-          items: items.map((item: CartItem) => ({
-            product_id: item.id,
-            quantity: item.quantity,
-            price: item.price,
-          })),
-        }),
-      });
-      const data = await response.json();
-      console.log(data);
-      return data;
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  // const createOrder = async () => {
+  //   try {
+  //     const response = await fetch("/api/order", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify({
+  //         profile_id: profile?.id,
+  //         items: items.map((item: CartItem) => ({
+  //           product_id: item.id,
+  //           quantity: item.quantity,
+  //           price: item.price,
+  //         })),
+  //       }),
+  //     });
+  //     const data = await response.json();
+  //     console.log(data);
+  //     return data;
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   const form = useForm<CheckoutFormValues>({
     initialValues: {

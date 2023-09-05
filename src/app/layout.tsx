@@ -1,9 +1,9 @@
 import RootStyleRegistry from "./providers";
 
 export const metadata = {
-  title: "Elysian Emporium",
+  title: "Open Market",
   description:
-    "A mystical marketplace where exotic treasures, enchanted artifacts, and magical wares from realms beyond converge, catering to heroes and adventurers seeking the extraordinary",
+    "An open source e-commerce platform built with Next.js, Mantine, and Supabase",
 };
 import { createServerComponentSupabaseClient } from "@supabase/auth-helpers-nextjs";
 import { cookies, headers } from "next/headers";

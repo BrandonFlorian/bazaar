@@ -18,13 +18,13 @@ export const lightTheme: MantineThemeOverride = {
     "-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji",
   fontFamilyMonospace:
     "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace",
-  primaryColor: "green",
+  primaryColor: "violet",
   respectReducedMotion: true,
   cursorType: "default",
   defaultGradient: {
-    from: "red",
-    to: "white",
-    deg: 180,
+    from: "violet",
+    to: "red",
+    deg: 45,
   },
   shadows: {
     xs: "0 0.0625rem 0.1875rem rgba(0, 0, 0, 0.05), 0 0.0625rem 0.125rem rgba(0, 0, 0, 0.1)",
@@ -78,7 +78,7 @@ export const lightTheme: MantineThemeOverride = {
   components: {
     Button: {
       defaultProps: {
-        color: "green",
+        //color: "green",
         size: "md",
         radius: "sm",
         variant: "filled",
@@ -88,21 +88,21 @@ export const lightTheme: MantineThemeOverride = {
     },
     Checkbox: {
       defaultProps: {
-        color: "green",
+        //color: "green",
         cursor: "pointer",
         size: "xl",
       },
     },
     Switch: {
       defaultProps: {
-        color: "green",
+        //color: "green",
         size: "md",
       },
     },
     ActionIcon: {
       defaultProps: {
         variant: "subtle",
-        color: "blue",
+        //color: "blue",
       },
       styles(theme, params, context) {
         return {

@@ -1,11 +1,17 @@
 import { QueryOptionsType } from "@/types/dataTypes";
 
-export const fetcher = async (url: string) => {
+export const fetcher = async (url: string, accessToken?: string) => {
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+  };
+
+  if (accessToken) {
+    headers["Authorization"] = `${accessToken}`;
+  }
+
   const res = await fetch(url, {
     method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
+    headers: headers,
   });
   const data = await res.json();
 
